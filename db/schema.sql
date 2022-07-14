@@ -1,30 +1,33 @@
--- DROP DATABASE
-DROP DATABASE IF EXISTS ecommerce_db;
+DROP TABLE IF EXISTS productTag;
+DROP TABLE IF EXISTS tag;
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS category;
 
--- CREATE DATABASE
-CREATE DATABASE ecommerce_db;
 
 CREATE TABLE category(
     id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    category_name VARCHAR(30) NOT NULL,
+    category_name VARCHAR(30) NOT NULL
     
-)
+);
 
 CREATE TABLE product(
     id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
     product_name VARCHAR(30) NOT NULL,
     price DECIMAL (10,2) NOT NULL,
     stock INTEGER NOT NULL DEFAULT (10),
-    category_id INTEGER FOREIGN KEY REFERENCES category(id)
-)
+    category_id INTEGER, 
+    FOREIGN KEY (category_id) REFERENCES category(id)
+);
 
 CREATE TABLE tag(
     id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    tag_name VARCHAR(30),
+    tag_name VARCHAR(30)
 
-)
+);
 CREATE TABLE productTag(
     id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
-    product_id INTEGER FOREIGN KEY REFERENCES product(id),
-    tag_id INTEGER FOREIGN KEY REFERENCES tag(id)
-)
+    product_id INTEGER,
+    tag_id INTEGER,
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (tag_id) REFERENCES tag(id)
+);
