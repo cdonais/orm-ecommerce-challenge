@@ -57,9 +57,6 @@ router.post('/', (req, res) => {
     product_id: req.body.product_id,
     tag_id: req.body.tag_id
   })
-  .then((tag) => {
-    if
-  })
 });
 
 router.put('/:id', (req, res) => {
