@@ -1,20 +1,13 @@
 const router = require('express').Router();
-const sequelize = require('../../config/connection');
 const { Tag, Product, ProductTag } = require('../../models');
 
 // The `/api/tags` endpoint
 
 router.get('/', (req, res) => {
   // find all tags
-  Tag.findall({
-    attributes: ['id', 'product_id', 'tag_id'],
+  Tag.findAll({
 // be sure to include its associated Product data
-    include: [
-      {
-        model: Product,
-        attributes: ['id', 'product_name', 'price', 'stock', 'category_id']
-      }
-    ]
+    include: [Product]
   })
   .then(dbProductData => res.json(dbProductData))
   .catch(err => {
@@ -27,25 +20,15 @@ router.get('/:id', (req, res) => {
   // find a single tag by its `id`
   Tag.findOne({
     where: {
-      id: req.params.id
-    },
-    attributes: ['id', 'product_id', 'tag_id'],
-  // be sure to include its associated Product data
-    include: [
-      {
-        model: Product,
-        attributes: ['id', 'product_name', 'price', 'stock', 'category_id']
-      } 
-    ]
-  })
-  .then(dbProductData => {
-    if (!dbProductData) {
-      res.status(404).json({ message: 'No tag found with this id'});
-      return;
-    }
-    res.json(dbProductData);
-  })
-  .catch(err => {
+      id: req.params.id},
+     // be sure to include its associated Product data
+    include: [Product],
+    
+})
+.then(dbProductData => {
+      return res.json(dbProductData);
+    })
+.catch(err => {
     console.log(err);
     res.status(500),json(err);
   });
@@ -54,8 +37,14 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   // create a new tag
   Tag.create({
-    product_id: req.body.product_id,
-    tag_id: req.body.tag_id
+    tag_name: req.body.tag_name
+  })
+  .then((dbProductData) => {
+    return res.json(dbProductData);
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json(err);
   })
 });
 
@@ -66,6 +55,12 @@ router.put('/:id', (req, res) => {
       id: req.params.id
     }
   })
+  .then(result => {
+    return res.json(result);
+  })
+  .catch(err =>{
+    return res.status(500).json(err);
+  });
 });
 
 router.delete('/:id', (req, res) => {
@@ -74,6 +69,13 @@ router.delete('/:id', (req, res) => {
     where: {
       id: req.params.id
     }
+  })
+  .then(result => {
+    return res.json(result);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json(err)
   })
 });
 
